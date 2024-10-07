@@ -1,18 +1,22 @@
+import { PrismaClient } from '@prisma/client';
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
-import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export default async function handler(req, res) {
-  console.log('Google auth handler called');
-  console.log('Request method:', req.method);
-  console.log('Request body:', req.body);
+  try {
+    console.log('Google auth API route hit');
+    console.log('Request method:', req.method);
+    console.log('Request body:', req.body);
 
-  if (req.method === 'POST') {
-    try {
+    if (req.method === 'POST') {
       const { idToken } = req.body;
+      if (!idToken) {
+        return res.status(400).json({ message: 'ID token is required' });
+      }
+
       const ticket = await client.verifyIdToken({
         idToken,
         audience: process.env.GOOGLE_CLIENT_ID,
@@ -40,12 +44,14 @@ export default async function handler(req, res) {
         username: user.username,
         profilePictureUrl: user.profilePictureUrl,
       });
-    } catch (error) {
-      console.error('Error in Google authentication:', error);
-      res.status(400).json({ message: 'Invalid token' });
+    } else {
+      res.setHeader('Allow', ['POST']);
+      res.status(405).json({ message: `Method ${req.method} Not Allowed` });
     }
-  } else {
-    res.setHeader('Allow', ['POST']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+  } catch (error) {
+    console.error('Error in Google authentication:', error);
+    res.status(400).json({ message: 'Authentication failed', error: error.message });
+  } finally {
+    await prisma.$disconnect();
   }
 }
