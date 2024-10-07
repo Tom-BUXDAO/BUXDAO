@@ -6,6 +6,10 @@ const prisma = new PrismaClient();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 export default async function handler(req, res) {
+  console.log('Google auth handler called');
+  console.log('Request method:', req.method);
+  console.log('Request body:', req.body);
+
   if (req.method === 'POST') {
     try {
       const { idToken } = req.body;
