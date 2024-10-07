@@ -8,6 +8,8 @@ const logger = require('../utils/logger');
 const authenticateToken = require('../middleware/authenticateToken'); // Add this line
 const { Op } = require('sequelize'); // Add this line
 const passport = require('passport');
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Input validation middleware
 const validateRegistration = [
@@ -121,6 +123,32 @@ router.get('/google', passport.authenticate('google', { scope: ['profile', 'emai
 router.get('/google/callback', passport.authenticate('google', { session: false }), (req, res) => {
   const token = jwt.sign({ userId: req.user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
   res.redirect(`http://localhost:8080/auth-success?token=${token}&username=${req.user.username}&profilePictureUrl=${req.user.profilePictureUrl || ''}`);
+});
+
+// New Google authentication route
+router.post('/google', async (req, res) => {
+  const { token } = req.body;
+  try {
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    const payload = ticket.getPayload();
+    const { email, name, picture } = payload;
+
+    // Here, you should check if the user exists in your database
+    // If not, create a new user
+    // Then, generate a JWT token for the user
+
+    res.json({
+      token: 'your_generated_jwt_token',
+      username: name,
+      profilePictureUrl: picture,
+    });
+  } catch (error) {
+    console.error('Error verifying Google token:', error);
+    res.status(400).json({ error: 'Invalid token' });
+  }
 });
 
 module.exports = router;

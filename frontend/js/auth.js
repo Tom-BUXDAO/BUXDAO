@@ -1,9 +1,13 @@
-const API_URL = 'http://localhost:5000'; // Make sure this matches your backend URL
+import { updateUIForLoggedInUser } from './main.js';
 
-// Add this at the top of your auth.js file
-const GOOGLE_CLIENT_ID = '75308957700-4t4de...'; // Replace with your full Client ID
+console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
+console.log('Current origin:', window.location.origin);
 
-document.addEventListener('DOMContentLoaded', () => {
+export function initAuth() {
+  console.log('initAuth called');
+  const API_URL = process.env.API_URL;
+  const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+
   const loginButton = document.getElementById('loginButton');
   const modal = document.getElementById('loginModal');
   const closeButton = modal.querySelector('.close');
@@ -82,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           if (isCreatingAccount) {
               // Automatically log in after registration
-              const loginResponse = await fetch('http://localhost:5000/api/auth/login', {
+              const loginResponse = await fetch(`${API_URL}/api/auth/login`, {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
@@ -136,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
       usernameDisplay.textContent = username;
 
       if (profilePictureUrl) {
-          profilePic.src = `http://localhost:5000${profilePictureUrl}`;
+          profilePic.src = profilePictureUrl.startsWith('http') ? profilePictureUrl : `${API_URL}${profilePictureUrl}`;
       } else {
           profilePic.src = 'default-pfp.jpg';
       }
@@ -149,39 +153,89 @@ document.addEventListener('DOMContentLoaded', () => {
   if (token && username) {
       updateUIForLoggedInUser(username, profilePictureUrl);
   }
-});
 
-const googleSignInButton = document.getElementById('googleSignIn');
+  // Add this function to load the Google API client library
+  async function loadGoogleScript() {
+      if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+          return Promise.resolve();
+      }
+      return new Promise((resolve, reject) => {
+          const script = document.createElement('script');
+          script.src = 'https://accounts.google.com/gsi/client';
+          script.onload = resolve;
+          script.onerror = reject;
+          document.head.appendChild(script);
+      });
+  }
 
-// Initialize the Google Sign-In API
-function initializeGoogleSignIn() {
-    gapi.load('auth2', function() {
-        gapi.auth2.init({
-            client_id: GOOGLE_CLIENT_ID
-        });
-    });
+  // Modify the handleGoogleSignIn function
+  async function handleGoogleSignIn() {
+      console.log('handleGoogleSignIn called');
+      try {
+          console.log('Loading Google script...');
+          await loadGoogleScript();
+          console.log('Google script loaded successfully');
+          
+          console.log('Initializing Google Sign-In...');
+          google.accounts.id.initialize({
+              client_id: process.env.GOOGLE_CLIENT_ID,
+              callback: handleGoogleCredentialResponse,
+              auto_select: false,
+              cancel_on_tap_outside: false
+          });
+          console.log('Google Sign-In initialized successfully');
+          
+          // Add click event listener to your existing button
+          document.getElementById('googleSignIn').addEventListener('click', () => {
+              console.log('Google Sign-In button clicked');
+              google.accounts.id.prompt((notification) => {
+                  console.log('Prompt notification:', notification);
+                  if (notification.isNotDisplayed()) {
+                      console.error('One Tap dialog was not displayed:', notification.getNotDisplayedReason());
+                  } else if (notification.isSkippedMoment()) {
+                      console.log('One Tap dialog was skipped:', notification.getSkippedReason());
+                  } else {
+                      console.log('One Tap dialog was displayed');
+                  }
+              });
+          });
+      } catch (error) {
+          console.error('Error in handleGoogleSignIn:', error);
+      }
+  }
+
+  async function handleGoogleCredentialResponse(response) {
+      if (response.credential) {
+          console.log('Received ID token:', response.credential);
+          try {
+              const result = await fetch(`${API_URL}/api/auth/google`, {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ token: response.credential }),
+              });
+              if (!result.ok) {
+                  const errorText = await result.text();
+                  console.error('Server response:', errorText);
+                  throw new Error(`HTTP error! status: ${result.status}`);
+              }
+              const data = await result.json();
+              localStorage.setItem('token', data.token);
+              localStorage.setItem('username', data.username);
+              localStorage.setItem('profilePictureUrl', data.profilePictureUrl);
+              updateUIForLoggedInUser(data.username, data.profilePictureUrl);
+              document.getElementById('loginModal').style.display = 'none';
+          } catch (error) {
+              console.error('Error processing Google Sign-In:', error);
+              alert('An error occurred while processing Google Sign-In. Please try again.');
+          }
+      }
+  }
+
+  // Call handleGoogleSignIn to initialize Google Sign-In
+  handleGoogleSignIn();
 }
-
-// Handle Google Sign-In
-function handleGoogleSignIn() {
-    const auth2 = gapi.auth2.getAuthInstance();
-    auth2.signIn().then(function(googleUser) {
-        const profile = googleUser.getBasicProfile();
-        console.log('ID: ' + profile.getId());
-        console.log('Name: ' + profile.getName());
-        console.log('Email: ' + profile.getEmail());
-        // Here you would typically send this information to your server
-        // to create or authenticate the user in your system
-    }).catch(function(error) {
-        console.error('Error:', error);
-    });
-}
-
-// Add event listener for the Google Sign-In button
-document.getElementById('googleSignIn').addEventListener('click', handleGoogleSignIn);
-
-// Call this function when the page loads
-window.onload = initializeGoogleSignIn;
 
 // Function to handle successful authentication
 function handleAuthSuccess() {

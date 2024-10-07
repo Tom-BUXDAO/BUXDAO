@@ -4,3 +4,6 @@
 !../.gitignore
 !../backend
 !../frontend
+
+# Ignore frontend .env file
+../frontend/.env

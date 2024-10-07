@@ -1,3 +1,7 @@
+import { initAuth } from './auth.js';
+
+const API_URL = process.env.API_URL;
+
 document.addEventListener('DOMContentLoaded', () => {
     // Remove or comment out the lines referencing 'app'
     // const app = document.getElementById('app');
@@ -23,80 +27,111 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteAccount = document.getElementById('deleteAccount');
     const logOut = document.getElementById('logOut');
 
-    connectWallet.addEventListener('click', (e) => {
-        e.preventDefault();
-        // Implement connect wallet functionality
-        console.log('Connect wallet clicked');
-    });
+    if (connectWallet) {
+        connectWallet.addEventListener('click', (e) => {
+            e.preventDefault();
+            // Implement connect wallet functionality
+            console.log('Connect wallet clicked');
+        });
+    }
 
-    changePFP.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const input = document.createElement('input');
-        input.type = 'file';
-        input.accept = 'image/*';
-        input.onchange = async (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const formData = new FormData();
-                formData.append('profilePicture', file);
+    if (changePFP) {
+        changePFP.addEventListener('click', (e) => {
+            e.preventDefault();
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = async (event) => {
+                const file = event.target.files[0];
+                if (file) {
+                    const formData = new FormData();
+                    formData.append('profilePicture', file);
 
+                    try {
+                        const response = await fetch(`${API_URL}/api/users/change-pfp`, {
+                            method: 'POST',
+                            headers: {
+                                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                            },
+                            body: formData
+                        });
+
+                        if (response.ok) {
+                            const result = await response.json();
+                            document.getElementById('profilePic').src = `${API_URL}${result.profilePictureUrl}`;
+                            alert('Profile picture updated successfully!');
+                        } else {
+                            throw new Error('Failed to update profile picture');
+                        }
+                    } catch (error) {
+                        console.error('Error updating profile picture:', error);
+                        alert('Failed to update profile picture. Please try again.');
+                    }
+                }
+            };
+            // Trigger the file input on the next tick
+            setTimeout(() => input.click(), 0);
+        });
+    }
+
+    if (deleteAccount) {
+        deleteAccount.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
                 try {
-                    const response = await fetch('http://localhost:5000/api/users/change-pfp', { // Updated URL
-                        method: 'POST',
+                    const response = await fetch(`${API_URL}/api/users/delete-account`, {
+                        method: 'DELETE',
                         headers: {
                             'Authorization': `Bearer ${localStorage.getItem('token')}`
-                        },
-                        body: formData
+                        }
                     });
 
                     if (response.ok) {
-                        const result = await response.json();
-                        document.getElementById('profilePic').src = `http://localhost:5000${result.profilePictureUrl}`;
-                        alert('Profile picture updated successfully!');
+                        alert('Your account has been deleted successfully.');
+                        localStorage.removeItem('token');
+                        localStorage.removeItem('username');
+                        window.location.reload();
                     } else {
-                        throw new Error('Failed to update profile picture');
+                        throw new Error('Failed to delete account');
                     }
                 } catch (error) {
-                    console.error('Error updating profile picture:', error);
-                    alert('Failed to update profile picture. Please try again.');
+                    console.error('Error deleting account:', error);
+                    alert('Failed to delete account. Please try again.');
                 }
             }
-        };
-        input.click();
-    });
+        });
+    }
 
-    deleteAccount.addEventListener('click', async (e) => {
-        e.preventDefault();
-        if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
-            try {
-                const response = await fetch('http://localhost:5000/api/users/delete-account', { // Updated URL
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                });
+    if (logOut) {
+        logOut.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('token');
+            localStorage.removeItem('username');
+            localStorage.removeItem('profilePictureUrl'); // Add this line
+            alert('You have been logged out successfully.');
+            window.location.reload();
+        });
+    }
 
-                if (response.ok) {
-                    alert('Your account has been deleted successfully.');
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('username');
-                    window.location.reload();
-                } else {
-                    throw new Error('Failed to delete account');
-                }
-            } catch (error) {
-                console.error('Error deleting account:', error);
-                alert('Failed to delete account. Please try again.');
-            }
-        }
-    });
-
-    logOut.addEventListener('click', (e) => {
-        e.preventDefault();
-        localStorage.removeItem('token');
-        localStorage.removeItem('username');
-        localStorage.removeItem('profilePictureUrl'); // Add this line
-        alert('You have been logged out successfully.');
-        window.location.reload();
-    });
+    // Initialize auth functionality
+    initAuth();
 });
+
+export function updateUIForLoggedInUser(username, profilePictureUrl) {
+    const loginButton = document.getElementById('loginButton');
+    const playerInfo = document.getElementById('playerInfo');
+    const burgerMenu = document.getElementById('burgerMenu');
+    const usernameDisplay = document.getElementById('usernameDisplay');
+    const profilePic = document.getElementById('profilePic');
+
+    loginButton.style.display = 'none';
+    playerInfo.style.display = 'flex';
+    burgerMenu.style.display = 'block';
+    usernameDisplay.textContent = username;
+
+    if (profilePictureUrl) {
+        profilePic.src = profilePictureUrl.startsWith('http') ? profilePictureUrl : `${API_URL}${profilePictureUrl}`;
+    } else {
+        profilePic.src = 'default-pfp.jpg';
+    }
+}
