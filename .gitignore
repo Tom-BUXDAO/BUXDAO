@@ -7,3 +7,13 @@
 
 # Ignore frontend .env file
 ../frontend/.env
+
+# Logs
+../backend/combined.log
+
+# Uploads
+../backend/uploads/
+
+# Frontend build and dependencies
+../frontend/dist/
+../frontend/node_modules/

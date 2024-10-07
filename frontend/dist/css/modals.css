@@ -1,0 +1,188 @@
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+  background-color: rgb(24, 24, 24);
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  max-width: 350px;
+  border-radius: 20px;
+  font-family: "Archivo", sans-serif;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: left; /* Change this to left align the content */
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  /* Remove centering of form elements */
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  text-align: left; /* Ensure labels are left-justified */
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="password"] {
+  width: 100%; /* Make inputs full width */
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box; /* Include padding in width calculation */
+}
+
+#submitButton,
+.social-login {
+  width: 100%;
+}
+
+/* Center the checkbox and its label */
+.form-group label[for="createAccount"] {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#createAccount {
+  margin-right: 5px;
+}
+
+/* Center the modal title */
+#modalTitle {
+  text-align: center;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #888;
+}
+
+.divider span {
+  padding: 0 10px;
+  color: #888;
+  font-size: 14px;
+}
+
+.social-login {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.social-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  display: flex; /* Use flexbox for centering text */
+  align-items: center; /* Center text vertically */
+  justify-content: center; /* Center text horizontally */
+}
+
+.social-btn:not(:last-child) {
+  margin-right: 10px;
+}
+
+.social-btn.google {
+  background-color: #DB4437;
+  color: white;
+}
+
+.social-btn.facebook {
+  background-color: #4267B2;
+  color: white;
+}
+
+.social-btn.twitter {
+  background-color: #1DA1F2;
+  color: white;
+}
+
+.social-btn:hover {
+  opacity: 0.9;
+}
+
+#loginForm #submitButton,
+.social-btn {
+  width: 100%;
+  height: 40px; /* Set a fixed height for all buttons */
+  padding: 0 !important; /* Remove padding */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 14px;
+  transition: background-color 0.3s;
+  display: flex !important; /* Use flexbox for centering text */
+  align-items: center !important; /* Center text vertically */
+  justify-content: center !important; /* Center text horizontally */
+}
+
+#loginForm #submitButton {
+  background-color: #4CAF50 !important;  /* Green color */
+  color: white !important;
+  margin-bottom: 20px !important; /* Add some space between submit button and divider */
+}
+
+#loginForm #submitButton:hover {
+  background-color: #45a049 !important;  /* Darker green on hover */
+}
+
+#submitButton:hover {
+  background-color: #45a049;  /* Darker green on hover */
+}
+
+#passwordRequirements {
+    font-size: 0.8em;
+    color: #666;
+    margin-top: 5px;
+}
+
+#passwordRequirements ul {
+    padding-left: 20px;
+    margin-top: 5px;
+}
