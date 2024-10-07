@@ -213,19 +213,17 @@ export function initAuth() {
       if (response.credential) {
           console.log('Received ID token:', response.credential);
           try {
-              const result = await fetch(`${API_URL}/api/auth/google`, {
+              const response = await fetch(`${API_URL}/api/auth/google`, {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ token: response.credential }),
+                  body: JSON.stringify({ idToken: response.credential }),
               });
-              if (!result.ok) {
-                  const errorText = await result.text();
-                  console.error('Server response:', errorText);
-                  throw new Error(`HTTP error! status: ${result.status}`);
+              if (!response.ok) {
+                  throw new Error(`HTTP error! status: ${response.status}`);
               }
-              const data = await result.json();
+              const data = await response.json();
               localStorage.setItem('token', data.token);
               localStorage.setItem('username', data.username);
               localStorage.setItem('profilePictureUrl', data.profilePictureUrl);
