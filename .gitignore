@@ -18,3 +18,8 @@ backend/uploads/
 # Frontend build and dependencies
 frontend/dist/
 frontend/node_modules/backend/combined.log
+node_modules/
+dist/
+frontend/node_modules/
+frontend/dist/
+backend/node_modules/
