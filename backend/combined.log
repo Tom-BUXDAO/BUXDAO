@@ -62,3 +62,11 @@
 {"level":"info","message":"Database synced","service":"user-service"}
 {"level":"info","message":"PostgreSQL connected","service":"user-service"}
 {"level":"info","message":"Database synced","service":"user-service"}
+{"level":"info","message":"PostgreSQL connected","service":"user-service"}
+{"level":"info","message":"Database synced","service":"user-service"}
+{"level":"info","message":"Login attempt:","password":"****","service":"user-service","usernameOrEmail":"Tom"}
+{"level":"info","message":"Login attempt:","password":"****","service":"user-service","usernameOrEmail":"Tom"}
+{"level":"info","message":"Login attempt:","password":"****","service":"user-service","usernameOrEmail":"Tom"}
+{"level":"info","message":"Login attempt:","password":"****","service":"user-service","usernameOrEmail":"Tom"}
+{"level":"info","message":"PostgreSQL connected","service":"user-service"}
+{"level":"info","message":"Database synced","service":"user-service"}
