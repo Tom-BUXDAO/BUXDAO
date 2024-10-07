@@ -214,7 +214,7 @@ export function initAuth() {
       if (response && response.credential) {
           console.log('Received ID token:', response.credential);
           try {
-              const apiResponse = await fetch(`${API_URL}/api/auth/google`, {
+              const apiResponse = await fetch('/api/auth/google', {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
