@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (changePFP) {
-        changePFP.addEventListener('click', (e) => {
+        changePFP.addEventListener('click', async (e) => {
             e.preventDefault();
             const input = document.createElement('input');
             input.type = 'file';
@@ -44,16 +44,13 @@ document.addEventListener('DOMContentLoaded', () => {
             input.onchange = async (event) => {
                 const file = event.target.files[0];
                 if (file) {
-                    const formData = new FormData();
-                    formData.append('profilePicture', file);
-
                     try {
                         const response = await fetch(`${API_URL}/api/users/change-pfp`, {
                             method: 'POST',
                             headers: {
                                 'Authorization': `Bearer ${localStorage.getItem('token')}`
                             },
-                            body: formData
+                            body: new FormData().append('profilePicture', file)
                         });
 
                         if (response.ok) {
@@ -69,8 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
             };
-            // Trigger the file input on the next tick
-            setTimeout(() => input.click(), 0);
+            input.click();
         });
     }
 

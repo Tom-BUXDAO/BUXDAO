@@ -3,7 +3,10 @@ import { updateUIForLoggedInUser } from './main.js';
 console.log('GOOGLE_CLIENT_ID:', process.env.GOOGLE_CLIENT_ID);
 console.log('Current origin:', window.location.origin);
 
+let googleInitialized = false;
+
 export function initAuth() {
+  if (googleInitialized) return;
   console.log('initAuth called');
   const API_URL = process.env.API_URL;
   const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
@@ -169,8 +172,6 @@ export function initAuth() {
   }
 
   // Modify the handleGoogleSignIn function
-  let googleInitialized = false;
-
   async function handleGoogleSignIn() {
       if (googleInitialized) return;
       console.log('handleGoogleSignIn called');
@@ -237,7 +238,6 @@ export function initAuth() {
       }
   }
 
-  // Call handleGoogleSignIn to initialize Google Sign-In
   handleGoogleSignIn();
 }
 
