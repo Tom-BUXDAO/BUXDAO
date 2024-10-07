@@ -210,20 +210,26 @@ export function initAuth() {
   }
 
   async function handleGoogleCredentialResponse(response) {
-      if (response.credential) {
+      console.log('Received Google Sign-In response:', response);
+      if (response && response.credential) {
           console.log('Received ID token:', response.credential);
           try {
-              const response = await fetch(`${API_URL}/api/auth/google`, {
+              const apiResponse = await fetch(`${API_URL}/api/auth/google`, {
                   method: 'POST',
                   headers: {
                       'Content-Type': 'application/json',
                   },
                   body: JSON.stringify({ idToken: response.credential }),
               });
-              if (!response.ok) {
-                  throw new Error(`HTTP error! status: ${response.status}`);
+              
+              if (!apiResponse.ok) {
+                  const errorData = await apiResponse.json();
+                  throw new Error(errorData.message || `HTTP error! status: ${apiResponse.status}`);
               }
-              const data = await response.json();
+              
+              const data = await apiResponse.json();
+              console.log('Backend response:', data);
+              
               localStorage.setItem('token', data.token);
               localStorage.setItem('username', data.username);
               localStorage.setItem('profilePictureUrl', data.profilePictureUrl);
@@ -233,6 +239,9 @@ export function initAuth() {
               console.error('Error processing Google Sign-In:', error);
               alert('An error occurred while processing Google Sign-In. Please try again.');
           }
+      } else {
+          console.error('Invalid response from Google Sign-In');
+          alert('Invalid response from Google Sign-In. Please try again.');
       }
   }
 
