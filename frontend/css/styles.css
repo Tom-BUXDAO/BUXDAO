@@ -1,0 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@100..900&display=swap');
+@import 'header.css';
+@import 'button.css';
+@import 'modals.css';
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom right, 
+                #221f47, /* Darkest purple in top left */
+                #5b4fa0  /* Lighter purple in bottom right */
+    );
+    color: #fff; /* Setting text color to white for better contrast */
+    font-family: "Archivo", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    min-height: 100vh; /* Ensure full viewport height */
+}
+
+main {
+    flex-grow: 1;
+    padding: 2rem;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

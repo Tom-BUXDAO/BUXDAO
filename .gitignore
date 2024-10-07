@@ -1,0 +1,6 @@
+# Ignore everything in the parent directory
+/..
+# But not these files...
+!../.gitignore
+!../backend
+!../frontend
