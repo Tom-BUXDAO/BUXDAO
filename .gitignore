@@ -1,19 +1,20 @@
 # Ignore everything in the parent directory
 /..
+
 # But not these files...
 !../.gitignore
 !../backend
 !../frontend
 
 # Ignore frontend .env file
-../frontend/.env
+frontend/.env
 
 # Logs
-../backend/combined.log
+backend/combined.log
 
 # Uploads
-../backend/uploads/
+backend/uploads/
 
 # Frontend build and dependencies
-../frontend/dist/
-../frontend/node_modules/
+frontend/dist/
+frontend/node_modules/
