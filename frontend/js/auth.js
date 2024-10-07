@@ -169,7 +169,10 @@ export function initAuth() {
   }
 
   // Modify the handleGoogleSignIn function
+  let googleInitialized = false;
+
   async function handleGoogleSignIn() {
+      if (googleInitialized) return;
       console.log('handleGoogleSignIn called');
       try {
           console.log('Loading Google script...');
@@ -199,6 +202,7 @@ export function initAuth() {
                   }
               });
           });
+          googleInitialized = true;
       } catch (error) {
           console.error('Error in handleGoogleSignIn:', error);
       }
