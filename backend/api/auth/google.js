@@ -9,7 +9,7 @@ export default async function handler(req, res) {
   try {
     console.log('Google auth API route hit');
     console.log('Request method:', req.method);
-    console.log('Request body:', req.body);
+    console.log('Request body:', JSON.stringify(req.body)); // Stringify the body for better logging
 
     if (req.method === 'POST') {
       const { idToken } = req.body;
