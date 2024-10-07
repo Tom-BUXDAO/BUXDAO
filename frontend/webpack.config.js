@@ -10,7 +10,8 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'public'),
+    clean: true, // This will clean the output directory before each build
   },
   module: {
     rules: [
@@ -36,17 +37,19 @@ module.exports = {
         { from: 'favicon.ico', to: 'favicon.ico' },
         { from: 'css', to: 'css' },
         { from: 'logo.png', to: 'logo.png' },
-        { from: 'default-pfp.jpg', to: 'default-pfp.jpg' }
+        { from: 'default-pfp.jpg', to: 'default-pfp.jpg' },
+        { from: 'privacy-policy.html', to: 'privacy-policy.html' },
+        { from: 'terms.html', to: 'terms.html' }
       ],
     }),
     new Dotenv({
       systemvars: true,
-      safe: false // Change this to false
+      safe: false
     })
   ],
   devServer: {
     static: {
-      directory: path.join(__dirname, 'dist'),
+      directory: path.join(__dirname, 'public'),
     },
     compress: true,
     port: 8080,
