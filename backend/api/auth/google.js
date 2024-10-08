@@ -5,7 +5,11 @@ import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient();
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-export default async function handler(req, res) {
+export default function handler(req, res) {
+  console.log('API route hit:', req.url);
+  console.log('Request method:', req.method);
+  console.log('Request body:', req.body);
+
   try {
     console.log('Google auth API route hit');
     console.log('Request method:', req.method);
