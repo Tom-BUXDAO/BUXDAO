@@ -5,8 +5,8 @@ const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: {
-    main: './js/main.js',
-    auth: './js/auth.js'
+    main: './src/js/main.js',
+    auth: './src/js/auth.js'
   },
   output: {
     filename: '[name].bundle.js',
@@ -29,7 +29,12 @@ module.exports = {
         test: /\.css$/,
         use: [
           'style-loader',
-          'css-loader',
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 1
+            }
+          },
           'postcss-loader'
         ]
       }
@@ -37,15 +42,15 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({
-      template: './index.html',
+      template: './src/index.html',
       filename: 'index.html'
     }),
     new CopyPlugin({
       patterns: [
-        { from: 'favicon.ico', to: 'favicon.ico' },
-        { from: 'css', to: 'css' },
-        { from: 'logo.png', to: 'logo.png' },
-        { from: 'default-pfp.jpg', to: 'default-pfp.jpg' },
+        { from: 'src/favicon.ico', to: 'favicon.ico' },
+        { from: 'src/css', to: 'css' },
+        { from: 'src/images/logo.png', to: 'logo.png' },
+        { from: 'src/images/default-pfp.jpg', to: 'default-pfp.jpg' },
         { from: 'privacy-policy.html', to: 'privacy-policy.html' },
         { from: 'terms.html', to: 'terms.html' }
       ],
@@ -57,7 +62,7 @@ module.exports = {
   ],
   devServer: {
     static: {
-      directory: path.join(__dirname, '.'), // Serve from the current directory
+      directory: path.join(__dirname, 'public'),
     },
     compress: true,
     port: 8080,
