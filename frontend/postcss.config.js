@@ -5,7 +5,8 @@ module.exports = {
       features: {
         'nesting-rules': true,
         'custom-properties': false
-      }
+      },
+      browsers: 'last 2 versions'
     })
   ]
 }
