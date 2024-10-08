@@ -5,7 +5,12 @@
     { 
       "src": "frontend/package.json",
       "use": "@vercel/static-build",
-      "config": { "distDir": "public" }
+      "config": { 
+        "distDir": "public",
+        "postbuild": [
+          "postcss css/*.css --use autoprefixer -d public/css"
+        ]
+      }
     }
   ],
   "routes": [
