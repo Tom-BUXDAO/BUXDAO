@@ -1,0 +1,7 @@
+{
+  "name": "buxdao",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "cd backend && npm run vercel-build && cd ../frontend && npm run build"
+  }
+}
