@@ -10,7 +10,7 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'public') // Output to the public directory
+    path: path.resolve(__dirname, '.') // Output to the current directory (frontend)
   },
   module: {
     rules: [
@@ -48,7 +48,7 @@ module.exports = {
   ],
   devServer: {
     static: {
-      directory: path.join(__dirname, 'public'),
+      directory: path.join(__dirname, '.'), // Serve from the current directory
     },
     compress: true,
     port: 8080,

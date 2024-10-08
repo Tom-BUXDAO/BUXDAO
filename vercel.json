@@ -3,18 +3,11 @@
   "builds": [
     { "src": "backend/api/**/*.js", "use": "@vercel/node" },
     { 
-      "src": "frontend/package.json",
-      "use": "@vercel/static-build",
-      "config": { 
-        "distDir": "public",
-        "postbuild": [
-          "postcss css/*.css --use autoprefixer -d public/css"
-        ]
-      }
+      "src": "frontend/**/*",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
-    { "src": "/api/(.*)", "dest": "/backend/api/$1" },
-    { "src": "/(.*)", "dest": "/frontend/public/$1" }
+    { "src": "/(.*)", "dest": "/frontend/$1" }
   ]
 }
