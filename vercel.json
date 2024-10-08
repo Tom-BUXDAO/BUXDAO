@@ -2,7 +2,7 @@
   "version": 2,
   "builds": [
     { "src": "backend/api/**/*.js", "use": "@vercel/node" },
-    { "src": "frontend/**/*", "use": "@vercel/static" }
+    { "src": "frontend/webpack.config.js", "use": "@vercel/webpack" }
   ],
   "routes": [
     { "src": "/api/(.*)", "dest": "backend/api/$1" },
