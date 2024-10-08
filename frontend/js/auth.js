@@ -222,12 +222,15 @@ export function initAuth() {
                   body: JSON.stringify({ idToken: response.credential }),
               });
               
+              console.log('API Response Status:', apiResponse.status);
+              const responseText = await apiResponse.text();
+              console.log('API Response Text:', responseText);
+
               if (!apiResponse.ok) {
-                  const errorData = await apiResponse.json();
-                  throw new Error(errorData.message || `HTTP error! status: ${apiResponse.status}`);
+                  throw new Error(`HTTP error! status: ${apiResponse.status}`);
               }
               
-              const data = await apiResponse.json();
+              const data = JSON.parse(responseText);
               console.log('Backend response:', data);
               
               localStorage.setItem('token', data.token);
@@ -237,6 +240,7 @@ export function initAuth() {
               document.getElementById('loginModal').style.display = 'none';
           } catch (error) {
               console.error('Error processing Google Sign-In:', error);
+              console.error('Error details:', error.message);
               alert('An error occurred while processing Google Sign-In. Please try again.');
           }
       } else {
