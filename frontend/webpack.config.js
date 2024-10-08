@@ -10,8 +10,7 @@ module.exports = {
   },
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'public'),
-    clean: true, // This will clean the output directory before each build
+    path: path.resolve(__dirname, '.') // Output to the current directory
   },
   module: {
     rules: [
